@@ -1,0 +1,107 @@
+:root {
+    --background-input-search: #ebfffc;
+    --input-color:  #626262;
+    --white-color: white;
+    --hover-color: rgb(239, 235, 235);
+}
+
+
+body {
+    background-image: url("../Assets/sky.png");
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.container {
+    width: 100vh;
+    height: 100vh;
+    margin: auto;
+    margin-top: 30px;
+    border-radius: 12px;
+    align-items: center;
+
+}
+
+.cityInput:hover {
+    background-color: var(--hover-color);
+}
+
+.top-bar {
+    display: flex;
+    justify-content: center;
+    gap: 14px;
+    padding-top: 60px;
+}
+
+.cityInput {
+    display: flex;
+    width: 362px;
+    height: 58px;
+    border: none;
+    outline: none;
+    border-radius: 40px;
+    color: var(--input-color);
+    font-size: 20px;
+    font-weight: 400;
+     background: var(--background-input-search);
+    
+}
+
+.weather-image {
+    margin-top: 29px;
+    display: flex;
+    justify-content: center;
+   
+}
+
+.weather-temp {
+    display: flex;
+    justify-content: center;
+    color: var(--white-color);
+    font-size: 50px;
+    font-weight: 400;
+}
+
+.weather-location {
+    display: flex;
+    justify-content: center;
+    color: var(--white-color);
+    font-size: 50px;
+    font-weight: 400;
+}
+
+.data-container {
+    margin-top: 50px;
+    color: var(--white-color);
+    display: flex;
+    justify-content: center;
+
+}
+
+.element {
+    margin: auto;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.data {
+    font-size: 34px;
+    font-weight: 400;
+}
+
+.text {
+    font-size: 20px;
+    font-weight: 400;
+}
+
+.icon {
+    margin-top: 10px;
+    width: 50px;
+    height: 50px;
+}
+
