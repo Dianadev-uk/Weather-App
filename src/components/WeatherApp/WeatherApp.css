@@ -17,24 +17,19 @@ body {
 }
 
 .container {
-    width: 100vh;
-    height: 100vh;
+    width: 100%;
+    height: 100%;
     margin: auto;
     margin-top: 30px;
     border-radius: 12px;
     align-items: center;
-
-}
-
-.cityInput:hover {
-    background-color: var(--hover-color);
+    flex-wrap: wrap;
 }
 
 .top-bar {
     display: flex;
-    justify-content: center;
     gap: 14px;
-    padding-top: 60px;
+    padding-top: auto;
 }
 
 .cityInput {
@@ -47,8 +42,13 @@ body {
     color: var(--input-color);
     font-size: 20px;
     font-weight: 400;
-     background: var(--background-input-search);
+    background: var(--background-input-search);
     
+    
+}
+
+.cityInput:hover {
+    background-color: var(--hover-color);
 }
 
 .weather-image {
@@ -105,3 +105,68 @@ body {
     height: 50px;
 }
 
+.forecast-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: stretch;
+    height: 100%;
+}
+
+.forecast-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    align-items: center;
+    color: white;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    margin: 10px;
+   
+}
+
+.forecast-item {
+   
+    padding: 15px;
+    border-radius: 10px;
+}
+
+.forecast-temp,
+.forecast-description {
+    font-size: 14px;
+}
+
+.five-days {
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   background-color: var(--background-input-search);
+   border: none;
+   outline: none;
+   height: 40px;
+   margin: auto;
+   border-radius: 20px;
+   margin-top: 10px;
+   transition: 0.3s ease;
+}
+
+.five-days span {
+    color: var(--input-color);
+}
+
+.five-days:hover{
+    background-color: var(--hover-color);
+    
+}
+
+.back-container {
+  margin-top: 20px;
+  margin-left: 10px;
+ 
+}
+
+.back span{
+    color: var(--white-color);
+    size: 14px;
+}

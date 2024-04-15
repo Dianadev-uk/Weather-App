@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import "../WeatherApp/WeatherApp.css";
 import clear_icon from "../Assets/clear.png";
 import cloud_icon from "../Assets/cloud.png";
@@ -7,6 +8,7 @@ import rain_icon from "../Assets/rain.png";
 import snow_icon from "../Assets/snow.png";
 import wind_icon from "../Assets/wind.png";
 import humidity_icon from "../Assets/humidity.png";
+import FiveDays from "../FiveDays/FiveDays";
 
 
  const WeatherApp = () => {
@@ -29,7 +31,8 @@ import humidity_icon from "../Assets/humidity.png";
   const [wicon, setWicon] = useState(cloud_icon);
   const [location, setLocation] = useState(null);
   const [selectedCity, setSelectedCity] = useState("");
-  const [cities, setCities] = useState(predefinedCities);
+   const [cities, setCities] = useState(predefinedCities);
+  
 
   useEffect(() => {
     fetchUserLocation();
@@ -39,7 +42,9 @@ import humidity_icon from "../Assets/humidity.png";
     navigator.geolocation.getCurrentPosition(
       (position) => {
         const { latitude, longitude } = position.coords;
+      
         fetchWeatherData(latitude, longitude);
+       
       },
       (error) => {
         console.error("Error getting user location:", error);
@@ -59,12 +64,9 @@ import humidity_icon from "../Assets/humidity.png";
 
   // const search = async (city) => {   //you can search any city 
   //   if (!city) return;
-
   //   let url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${api_key}`;
-
   //   let response = await fetch(url);
   //   let data = await response.json();
-
   //   updateWeatherInfo(data);
   // }; 
 
@@ -126,15 +128,19 @@ import humidity_icon from "../Assets/humidity.png";
           value={selectedCity}
         >
           <option value="">Select a city</option>
+         
           {cities.map((city) => (
             <option key={city.name} value={city.name}>
               {city.name}
             </option>
+           
           ))}
         </select>
       </div>
       
+        <button className="five-days"><Link to="/forecast"><span>5 Days Forecast</span></Link></button>
       <div className="weather-image">
+        
         <img src={wicon} alt="" className="icon" />
       </div>
       <div className="weather-temp">24 C</div>
@@ -155,6 +161,7 @@ import humidity_icon from "../Assets/humidity.png";
           </div>
         </div>
       </div>
+      
     </div>
   );
 };
