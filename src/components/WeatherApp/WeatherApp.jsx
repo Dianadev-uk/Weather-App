@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
 import "../WeatherApp/WeatherApp.css";
 import clear_icon from "../Assets/clear.png";
 import cloud_icon from "../Assets/cloud.png";
@@ -8,47 +7,32 @@ import rain_icon from "../Assets/rain.png";
 import snow_icon from "../Assets/snow.png";
 import wind_icon from "../Assets/wind.png";
 import humidity_icon from "../Assets/humidity.png";
-import FiveDays from "../FiveDays/FiveDays";
 
 
- const WeatherApp = () => {
+
+const WeatherApp = () => {
   let api_key = "cd7706d20d9a4a6633d4357900d79d1d";
-
-  
-  const predefinedCities = [
-    { name: "New York", latitude: 40.7128, longitude: -74.006 },
-    { name: "London", latitude: 51.5074, longitude: -0.1278 },
-    { name: "Paris", latitude: 48.8566, longitude: 2.3522 },
-    { name: "Tokyo", latitude: 35.6895, longitude: 139.6917 },
-    { name: "Sydney", latitude: -33.8688, longitude: 151.2093 },
-    { name: "Los Angeles", latitude: 34.0522, longitude: -118.2437 },
-    { name: "Berlin", latitude: 52.52, longitude: 13.405 },
-    { name: "Rome", latitude: 41.9028, longitude: 12.4964 },
-    { name: "Moscow", latitude: 55.7558, longitude: 37.6173 },
-    { name: "Beijing", latitude: 39.9042, longitude: 116.4074 },
-  ];
 
   const [wicon, setWicon] = useState(cloud_icon);
   const [location, setLocation] = useState(null);
+  const [temperature, setTemperature] = useState("24°C"); //default
+  const [humidity, setHumidity] = useState("64%"); //default
+  const [windSpeed, setWindSpeed] = useState("18 km/h"); //default
   const [selectedCity, setSelectedCity] = useState("");
-   const [cities, setCities] = useState(predefinedCities);
-  
+  const [typingTimeout, setTypingTimeout] = useState(0) //to manage time delay. I don't want the city name below update before finishing typing on the input.
 
   useEffect(() => {
     fetchUserLocation();
   }, []);
 
-  const fetchUserLocation = () => {
+  const fetchUserLocation = () => {  //to get the current user location
     navigator.geolocation.getCurrentPosition(
       (position) => {
         const { latitude, longitude } = position.coords;
-      
         fetchWeatherData(latitude, longitude);
-       
       },
       (error) => {
         console.error("Error getting user location:", error);
-        
       }
     );
   };
@@ -58,29 +42,28 @@ import FiveDays from "../FiveDays/FiveDays";
 
     let response = await fetch(url);
     let data = await response.json();
-
     updateWeatherInfo(data);
   };
 
-  // const search = async (city) => {   //you can search any city 
-  //   if (!city) return;
-  //   let url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${api_key}`;
-  //   let response = await fetch(url);
-  //   let data = await response.json();
-  //   updateWeatherInfo(data);
-  // }; 
+  const search = async (city) => { //you can search any city
+    if (!city) return;
+    let url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${api_key}`;
+    let response = await fetch(url);
+    let data = await response.json();
+    updateWeatherInfo(data);
+  };
 
   const updateWeatherInfo = (data) => {
-    const humidity = data.main.humidity + "%";
-    const windSpeed = data.wind.speed + " km/h";
-    const temperature = data.main.temp + "°C";
+    const humidityValue = data.main.humidity + "%";
+    const windSpeedValue = data.wind.speed + " km/h";
+    const temperatureValue = data.main.temp + "°C";
     const cityName = data.name;
 
     setWicon(getWeatherIcon(data.weather[0].icon));
     setLocation(cityName);
-    document.getElementsByClassName("humidity-percent")[0].innerHTML = humidity;
-    document.getElementsByClassName("wind-rate")[0].innerHTML = windSpeed;
-    document.getElementsByClassName("weather-temp")[0].innerHTML = temperature;
+     setTemperature(temperatureValue);
+     setHumidity(humidityValue);
+     setWindSpeed(windSpeedValue);
   };
 
   const getWeatherIcon = (weatherCode) => {
@@ -110,61 +93,77 @@ import FiveDays from "../FiveDays/FiveDays";
   };
 
   const handleCityChange = (event) => {
-    setSelectedCity(event.target.value);
-    const selectedCityData = cities.find(
-      (city) => city.name === event.target.value
-    );
-    if (selectedCityData) {
-      fetchWeatherData(selectedCityData.latitude, selectedCityData.longitude);
+    const city = event.target.value;
+    setSelectedCity(city);
+
+    clearTimeout(typingTimeout);
+
+    const timeout = setTimeout(() => {
+      if (!city) {
+        fetchUserLocation(); //fetch users location if input is empty
+      } else {
+        search(city);
+      }
+     
+    }, 500);
+    setTypingTimeout(timeout);
+
+
+    const humidityElement =
+      document.getElementsByClassName("humidity-percent")[0];
+    const windElement = document.getElementsByClassName("wind-rate")[0];
+    const tempElement = document.getElementsByClassName("weather-temp")[0];
+
+    if (humidityElement) {
+      humidityElement.innerHTML = humidity;
+    }
+
+    if (windElement) {
+      windElement.innerHTML = windSpeed;
+    }
+
+    if (tempElement) {
+      tempElement.innerHTML = temperature;
     }
   };
 
   return (
     <div className="container">
       <div className="top-bar">
-        <select
+        <input
+          type="text"
           className="cityInput"
+          placeholder="Enter a city"
           onChange={handleCityChange}
           value={selectedCity}
-        >
-          <option value="">Select a city</option>
-         
-          {cities.map((city) => (
-            <option key={city.name} value={city.name}>
-              {city.name}
-            </option>
-           
-          ))}
-        </select>
+        />
       </div>
-      
-        <button className="five-days"><Link to="/forecast"><span>5 Days Forecast</span></Link></button>
+
       <div className="weather-image">
-        
         <img src={wicon} alt="" className="icon" />
       </div>
-      <div className="weather-temp">24 C</div>
+      <div className="weather-temp">{temperature}</div>
       <div className="weather-location">{location || "Loading..."}</div>
       <div className="data-container">
         <div className="element">
           <img src={humidity_icon} alt="" className="icon" />
           <div className="data">
-            <div className="humidity-percent">64%</div>
+            <div className="humidity-percent">{ humidity}</div>
             <div className="text">Humidity</div>
           </div>
         </div>
         <div className="element">
           <img src={wind_icon} alt="" className="icon" />
           <div className="data">
-            <div className="wind-rate">18 km/h</div>
+            <div className="wind-rate">{ windSpeed}</div>
             <div className="text">Wind Speed</div>
           </div>
         </div>
       </div>
-      
     </div>
   );
 };
+
 
 export default WeatherApp;
 
